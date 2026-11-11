@@ -1,5 +1,10 @@
-*.pyc
+# Python compiled files
 __pycache__/
+*.py[cod]
+
+# Odoo / OS temp files
+*.log
 .DS_Store
 .idea/
 .vscode/
+*.swp
