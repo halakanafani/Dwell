@@ -10,13 +10,13 @@ Follow this guide to clone the project, set up your feature branch, test your ch
 
 Every team member must work **only** inside their assigned feature branch:
 
-| Team Member | Feature Area | Branch Name | Key Files |
-| :--- | :--- | :--- | :--- |
-| **Fathimath Zehara** | Property Management & Menus | `feature/property-management` | `models/property.py`, `models/unit.py`, `views/property_views.xml`, `views/menus.xml` |
-| **Afra Tazeen** | Booking & Reservations | `feature/booking-management` | `models/booking.py`, `views/booking_views.xml`, `data/cron_data.xml` |
-| **Hala Kanafani** | DTCM Permits & Security | `feature/permit-management` | `models/permit.py`, `views/permit_views.xml`, `security/security.xml`, `security/ir.model.access.csv` |
-| **Lilyan Yousuf** | Rental Agreements & Reports | `feature/rental-agreements` | `models/rental_agreement.py`, `views/rental_agreement_views.xml`, `data/agreement_template_data.xml`, `report/rental_agreement_report.xml` |
-| **Ali Hassan** | Service & Cleaning Tasks | `feature/service-tasks` | `models/service_task.py`, `views/service_task_views.xml` |
+| Team Member | Branch Name | Key Files |
+
+| **Ali Hassan** | Property Management | `models/property.py`, `models/unit.py`, `views/property_views.xml`, `views/menus.xml` |
+| **Hala Kanafani** | Booking & Reservations | `models/booking.py`, `views/booking_views.xml`, `data/cron_data.xml` |
+| **Afra Tazeen** | Permits | `models/permit.py`, `views/permit_views.xml`, `security/security.xml`, `security/ir.model.access.csv` |
+| **Fathimath Zehraa** | Rental Agreements & Reports  | `models/rental_agreement.py`, `views/rental_agreement_views.xml`, `data/agreement_template_data.xml`, `report/rental_agreement_report.xml` |
+| **Lilyan Yousuf** | Service & Cleaning Tasks |  `models/service_task.py`, `views/service_task_views.xml` |
 
 ---
 
