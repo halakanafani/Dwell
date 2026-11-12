@@ -1,0 +1,26 @@
+<odoo>
+    <!-- Register the Report Action Button -->
+    <record id="action_report_rental_agreement" model="ir.actions.report">
+        <field name="name">Print Rental Agreement</field>
+        <field name="model">dwell.rental.agreement</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">dwell_management.report_rental_agreement_document</field>
+        <field name="print_report_name">'Rental_Agreement_' + (object.name or '')</field>
+    </record>
+
+    <!-- QWeb PDF Layout Design -->
+    <template id="report_rental_agreement_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Holiday Home Rental Agreement</h2>
+                <hr/>
+                <p><strong>Guest Name:</strong> <span t-field="doc.customer_id.name"/></p>
+                <p><strong>Property Unit:</strong> <span t-field="doc.unit_id.name"/></p>
+                <p><strong>Dates:</strong> <span t-field="doc.check_in_date"/> to <span t-field="doc.check_out_date"/></p>
+                <br/>
+                <h4>Terms &amp; Conditions</h4>
+                <p><span t-field="doc.terms_content"/></p>
+            </div>
+        </t>
+    </template>
+</odoo>

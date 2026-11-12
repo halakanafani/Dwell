@@ -1,0 +1,20 @@
+<odoo>
+    <data nodry="1">
+        <!-- Module Security Category -->
+        <record id="module_category_dwell" model="ir.module.category">
+            <field name="name">Dwell Management</field>
+        </record>
+
+        <!-- Property Manager Group -->
+        <record id="group_dwell_manager" model="res.groups">
+            <field name="name">Property Manager</field>
+            <field name="category_id" ref="module_category_dwell"/>
+        </record>
+
+        <!-- Field Service Staff Group -->
+        <record id="group_dwell_staff" model="res.groups">
+            <field name="name">Field Staff</field>
+            <field name="category_id" ref="module_category_dwell"/>
+        </record>
+    </data>
+</odoo>

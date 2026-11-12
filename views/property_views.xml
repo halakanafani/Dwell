@@ -1,0 +1,53 @@
+#Ali's Part this is just a demo, pleaser refer to our use cases and classes to design this
+
+<odoo>
+    <!-- List View (Changed from 'tree' to 'list' for Odoo 19) -->
+    <record id="view_dwell_property_list" model="ir.ui.view">
+        <field name="name">dwell.property.list</field>
+        <field name="model">dwell.property</field>
+        <field name="arch" type="xml">
+            <list string="Properties">
+                <field name="name"/>
+                <field name="address"/>
+                <field name="property_type"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_dwell_property_form" model="ir.ui.view">
+        <field name="name">dwell.property.form</field>
+        <field name="model">dwell.property</field>
+        <field name="arch" type="xml">
+            <form string="Property">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="address"/>
+                        </group>
+                        <group>
+                            <field name="property_type"/>
+                            <field name="status"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open Properties view -->
+    <record id="action_dwell_property" model="ir.actions.act_window">
+        <field name="name">Properties</field>
+        <field name="res_model">dwell.property</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Main Top Menu -->
+    <menuitem id="menu_dwell_root" name="Dwell" sequence="10"/>
+    
+    <!-- Sub-menu under Dwell -->
+    <menuitem id="menu_dwell_property" name="Properties" parent="menu_dwell_root" action="action_dwell_property"/>
+</odoo>
+

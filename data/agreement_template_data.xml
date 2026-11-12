@@ -1,0 +1,14 @@
+<odoo>
+    <data noupdate="1">
+        <record id="template_short_term" model="dwell.agreement.template">
+            <field name="name">Short-Term Rental Contract (Dubai)</field>
+            <field name="content">
+                Standard Short-Term Rental Terms for Dubai Tourism (DTCM).
+                Guest Name: ${object.customer_id.name}
+                Property Unit: ${object.unit_id.name}
+                Check-in Date: ${object.check_in_date}
+                Check-out Date: ${object.check_out_date}
+            </field>
+        </record>
+    </data>
+</odoo>
