@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_dwell_property_user,access.dwell.property.user,model_dwell_property,,1,1,1,1
+access_dwell_permit_all,access.dwell.permit.all,model_dwell_permit,,1,1,1,1
