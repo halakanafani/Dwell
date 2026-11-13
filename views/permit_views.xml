@@ -1,0 +1,95 @@
+<odoo>
+    <!-- List view (Odoo 19 uses <list>, not <tree>) -->
+    <record id="view_dwell_permit_list" model="ir.ui.view">
+        <field name="name">dwell.permit.list</field>
+        <field name="model">dwell.permit</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'valid'"
+                  decoration-warning="state in ('expiring_soon', 'suspended')"
+                  decoration-danger="state in ('expired', 'closed', 'rejected')">
+                <field name="name"/>
+                <field name="permit_type"/>
+                <field name="unit_id"/>
+                <field name="manager_id"/>
+                <field name="issue_date"/>
+                <field name="expiry_date"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_dwell_permit_form" model="ir.ui.view">
+        <field name="name">dwell.permit.form</field>
+        <field name="model">dwell.permit</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_application" type="object" string="Submit Application"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_dtcm_valid" type="object" string="DTCM: Approved"
+                            class="btn-primary"
+                            invisible="state not in ('under_inspection', 'suspended', 'reopening_inspection')"/>
+                    <button name="action_dtcm_rejected" type="object" string="DTCM: Rejected"
+                            invisible="state != 'under_inspection'"/>
+                    <button name="action_dtcm_suspended" type="object" string="DTCM: Suspended"
+                            invisible="state not in ('valid', 'expiring_soon')"/>
+                    <button name="action_dtcm_closed" type="object" string="DTCM: Closed"
+                            invisible="state not in ('suspended', 'reopening_inspection')"/>
+                    <button name="action_dtcm_reopen_requested" type="object" string="Reopen Requested"
+                            invisible="state != 'closed'"/>
+                    <button name="action_dtcm_reopening_inspection" type="object" string="Fee Paid: Reopen Inspection"
+                            invisible="state != 'reopen_requested'"/>
+                    <button name="action_send_reminder" type="object" string="Send Reminder"
+                            invisible="state != 'valid'"/>
+                    <button name="action_renew" type="object" string="Renew Permit"
+                            class="btn-primary" invisible="state not in ('expiring_soon', 'expired')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,under_inspection,valid,expiring_soon,expired"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Permit">
+                            <field name="name"/>
+                            <field name="permit_type"/>
+                            <field name="unit_id"/>
+                            <field name="manager_id"/>
+                            <field name="license_info"/>
+                        </group>
+                        <group string="Dates">
+                            <field name="issue_date"/>
+                            <field name="expiry_date"/>
+                            <field name="new_expiry_date"
+                                   invisible="state not in ('expiring_soon', 'expired')"/>
+                            <field name="last_dtcm_update"/>
+                        </group>
+                    </group>
+                    <group string="Operator Details" invisible="permit_type != 'operator'">
+                        <group>
+                            <field name="operator_license_no"/>
+                            <field name="owner_authorisation_letter" filename="owner_authorisation_filename"/>
+                            <field name="owner_authorisation_filename" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="contract_start_date"/>
+                            <field name="contract_end_date"/>
+                        </group>
+                    </group>
+                    <group string="DTCM Remarks">
+                        <field name="dtcm_remarks" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Window action action and menu -->
+    <record id="action_dwell_permit" model="ir.actions.act_window">
+        <field name="name">Permits</field>
+        <field name="res_model">dwell.permit</field>
+        <field name="view_mode">list,form</field>
+    </record>
+        <menuitem id="menu_dwell_permit" name="Permits"
+              parent="menu_dwell_root"
+              action="action_dwell_permit" sequence="20"/>
+</odoo>
