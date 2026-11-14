@@ -6,8 +6,10 @@
     'author': 'Supernova Team',
     'depends': ['base'],
     'data': [
+        'security/security.xml',
         'security/ir.model.access.csv',
         'views/property_views.xml',
+        'views/permit_views.xml',
     ],
     'installable': True,
     'application': True,
