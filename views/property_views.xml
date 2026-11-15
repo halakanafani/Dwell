@@ -1,7 +1,6 @@
-#Ali's Part this is just a demo, pleaser refer to our use cases and classes to design this
-
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- List View (Changed from 'tree' to 'list' for Odoo 19) -->
+    <!-- List View -->
     <record id="view_dwell_property_list" model="ir.ui.view">
         <field name="name">dwell.property.list</field>
         <field name="model">dwell.property</field>
@@ -37,17 +36,14 @@
         </field>
     </record>
 
-    <!-- Action to open Properties view -->
+    <!-- Action -->
     <record id="action_dwell_property" model="ir.actions.act_window">
         <field name="name">Properties</field>
         <field name="res_model">dwell.property</field>
         <field name="view_mode">list,form</field>
     </record>
 
-    <!-- Main Top Menu -->
+    <!-- Menus -->
     <menuitem id="menu_dwell_root" name="Dwell" sequence="10"/>
-    
-    <!-- Sub-menu under Dwell -->
     <menuitem id="menu_dwell_property" name="Properties" parent="menu_dwell_root" action="action_dwell_property"/>
 </odoo>
-
