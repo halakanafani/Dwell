@@ -5,3 +5,5 @@ from . import property
 #from . import permit
 from . import rental_agreement
 #from . import service_task*//
+from . import booking
+from . import permit
