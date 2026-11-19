@@ -4,4 +4,3 @@ access_dwell_rental_agreement,dwell.rental.agreement,model_dwell_rental_agreemen
 access_dwell_booking,dwell.booking,model_dwell_booking,base.group_user,1,1,1,1
 access_dwell_permit,dwell.permit,model_dwell_permit,base.group_user,1,1,1,1
 access_dwell_agreement_template,dwell.agreement.template,model_dwell_agreement_template,base.group_user,1,1,1,1
-
