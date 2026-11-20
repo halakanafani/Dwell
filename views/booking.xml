@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View for Bookings -->
+    <record id="view_dwell_booking_list" model="ir.ui.view">
+        <field name="name">dwell.booking.list</field>
+        <field name="model">dwell.booking</field>
+        <field name="arch" type="xml">
+            <list string="Reservations">
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="property_id"/>
+                <field name="check_in_date"/>
+                <field name="check_out_date"/>
+                <field name="booking_source"/>
+                <field name="booking_type"/>
+                <field name="booking_status" widget="badge" 
+                       decoration-info="booking_status == 'pending'"
+                       decoration-success="booking_status in ('confirmed', 'checked_in')"
+                       decoration-muted="booking_status == 'checked_out'"
+                       decoration-danger="booking_status == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View for Bookings -->
+    <record id="view_dwell_booking_form" model="ir.ui.view">
+        <field name="name">dwell.booking.form</field>
+        <field name="model">dwell.booking</field>
+        <field name="arch" type="xml">
+            <form string="Reservation">
+                <header>
+                    <button name="action_confirm_booking" string="Confirm Booking" type="object" class="oe_highlight" invisible="booking_status != 'pending'"/>
+                    <button name="action_check_in" string="Check-In Guest" type="object" class="oe_highlight" invisible="booking_status != 'confirmed'"/>
+                    <button name="action_check_out" string="Check-Out Guest" type="object" class="oe_highlight" invisible="booking_status != 'checked_in'"/>
+                    <button name="action_cancel_booking" string="Cancel Booking" type="object" invisible="booking_status in ('checked_out', 'cancelled')"/>
+                    <field name="booking_status" widget="statusbar" statusbar_visible="pending,confirmed,checked_in,checked_out"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Stay &amp; Property Details">
+                            <field name="property_id"/>
+                            <field name="check_in_date"/>
+                            <field name="check_out_date"/>
+                            <field name="booking_source"/>
+                            <field name="booking_type"/>
+                        </group>
+                        <group string="Guest Information">
+                            <field name="customer_name"/>
+                            <field name="customer_email"/>
+                            <field name="customer_phone"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Special Requests &amp; VIP Perks" invisible="booking_type != 'special'">
+                            <group>
+                                <field name="special_requests"/>
+                                <field name="vip_perks"/>
+                            </group>
+                        </page>
+                        <page string="Cancellation Info" invisible="booking_status != 'cancelled'">
+                            <group>
+                                <field name="cancellation_reason"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Bookings -->
+    <record id="action_dwell_booking" model="ir.actions.act_window">
+        <field name="name">Bookings</field>
+        <field name="res_model">dwell.booking</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Sub-menu under Dwell Root -->
+    <menuitem id="menu_dwell_booking" 
+              name="Bookings" 
+              parent="dwell_management.menu_dwell_root" 
+              action="action_dwell_booking" 
+              sequence="20"/>
+</odoo>
