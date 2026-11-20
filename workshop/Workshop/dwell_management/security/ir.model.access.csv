@@ -1,4 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_dwell_property_user,access.dwell.property.user,model_dwell_property,,1,1,1,1
-access_field_service_staff,access_field_service_staff,model_field_service_staff,base.group_user,1,1,1,1
-access_service_tasks,access_service_tasks,model_service_tasks,base.group_user,1,1,1,1
