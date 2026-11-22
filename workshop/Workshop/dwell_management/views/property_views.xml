@@ -1,4 +1,9 @@
+<<<<<<< HEAD:views/property_views.xml
 <?xml version="1.0" encoding="utf-8"?>
+=======
+<!--Ali's Part this is just a demo, pleaser refer to our use cases and classes to design this -->
+
+>>>>>>> 2ff131b06a072364bd885b0b395120c821922a1a:workshop/Workshop/dwell_management/views/property_views.xml
 <odoo>
     <!-- List View -->
     <record id="view_dwell_property_list" model="ir.ui.view">

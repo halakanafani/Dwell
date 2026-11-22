@@ -1,0 +1,10 @@
+<odoo>
+    <!-- Generates automatic references for rental agreements -->
+    <record id="seq_rental_agreement" model="ir.sequence">
+        <field name="name">Rental Agreement Sequence</field>
+        <field name="code">dwell.rental.agreement</field>
+        <field name="prefix">AGR-</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+    </record>
+</odoo>

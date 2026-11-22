@@ -1,5 +1,7 @@
+
 <odoo>
-    <!-- Register the Report Action Button -->
+
+    <!-- Registers the Rental Agreement PDF report -->
     <record id="action_report_rental_agreement" model="ir.actions.report">
         <field name="name">Print Rental Agreement</field>
         <field name="model">dwell.rental.agreement</field>
@@ -8,19 +10,170 @@
         <field name="print_report_name">'Rental_Agreement_' + (object.name or '')</field>
     </record>
 
-    <!-- QWeb PDF Layout Design -->
+    <!-- Defines the Rental Agreement PDF -->
     <template id="report_rental_agreement_document">
-        <t t-call="web.external_layout">
-            <div class="page">
-                <h2>Holiday Home Rental Agreement</h2>
-                <hr/>
-                <p><strong>Guest Name:</strong> <span t-field="doc.customer_id.name"/></p>
-                <p><strong>Property Unit:</strong> <span t-field="doc.unit_id.name"/></p>
-                <p><strong>Dates:</strong> <span t-field="doc.check_in_date"/> to <span t-field="doc.check_out_date"/></p>
-                <br/>
-                <h4>Terms &amp; Conditions</h4>
-                <p><span t-field="doc.terms_content"/></p>
-            </div>
+
+        <t t-call="web.html_container">
+
+            <!-- Prints each selected rental agreement -->
+            <t t-foreach="docs" t-as="doc">
+
+                <!-- Basic layout removes Odoo's default company header -->
+                <t t-call="web.basic_layout">
+
+                    <div class="page">
+
+                        <!-- Dwell purple and cream title -->
+                        <div style="background-color:#45255e;
+                                    padding:20px;
+                                    text-align:center;">
+
+                            <h2 style="color:#fff1cf;">
+                                DWELL
+                            </h2>
+
+                            <h3 style="color:#fff1cf;">
+                                HOLIDAY HOME RENTAL AGREEMENT
+                            </h3>
+
+                        </div>
+
+                        <!-- Agreement information -->
+                        <div style="margin-top:25px;">
+
+                            <h4 style="color:#45255e;">
+                                Agreement Information
+                            </h4>
+
+                            <p>
+                                <strong>Agreement Reference:</strong>
+                                <span t-field="doc.name"/>
+                            </p>
+
+                            <p>
+                                <strong>Agreement Date:</strong>
+                                <span t-field="doc.agreement_date"/>
+                            </p>
+
+                            <p>
+                                <strong>Guest Name:</strong>
+                                <span t-field="doc.guest_name"/>
+                            </p>
+
+                            <!-- Booking selected for the agreement -->
+                            <p>
+                                <strong>Booking Reference:</strong>
+                                <span t-field="doc.booking_id"/>
+                            </p>
+
+                            <!-- Property linked to the selected booking -->
+                            <p>
+                                <strong>Property:</strong>
+                                <span t-field="doc.property_id"/>
+                            </p>
+
+                            <p>
+                                <strong>Check-In Date:</strong>
+                                <span t-field="doc.check_in_date"/>
+                            </p>
+
+                            <p>
+                                <strong>Check-Out Date:</strong>
+                                <span t-field="doc.check_out_date"/>
+                            </p>
+
+                        </div>
+
+                        <!-- Terms copied from the selected template -->
+                        <div style="margin-top:25px;">
+
+                            <h4 style="color:#45255e;
+                                       border-bottom:2px solid #45255e;
+                                       padding-bottom:8px;">
+                                Terms and Conditions
+                            </h4>
+
+                            <div style="white-space:pre-wrap;"
+                                 t-esc="doc.terms_content or ''"/>
+
+                        </div>
+
+                        <!-- House rules copied from the template -->
+                        <div style="margin-top:25px;">
+
+                            <h4 style="color:#45255e;
+                                       border-bottom:2px solid #45255e;
+                                       padding-bottom:8px;">
+                                House Rules
+                            </h4>
+
+                            <div style="white-space:pre-wrap;"
+                                 t-esc="doc.house_rules or ''"/>
+
+                        </div>
+
+                        <!-- Signature section -->
+                        <div style="margin-top:45px;">
+
+                            <h4 style="color:#45255e;">
+                                Agreement Acceptance
+                            </h4>
+
+                            <p>
+                                By signing below, the guest agrees
+                                to the rental terms and house rules.
+                            </p>
+
+                            <table style="width:100%;
+                                          margin-top:45px;
+                                          border-collapse:collapse;">
+                                <tr>
+
+                                    <td style="width:50%;
+                                               padding-right:25px;
+                                               vertical-align:top;">
+
+                                        <div style="border-top:1px solid #45255e;
+                                                    padding-top:8px;">
+                                            Guest Signature
+                                        </div>
+
+                                    </td>
+
+                                    <td style="width:50%;
+                                               padding-left:25px;
+                                               vertical-align:top;">
+
+                                        <div style="border-top:1px solid #45255e;
+                                                    padding-top:8px;">
+                                            Property Manager Signature
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                            </table>
+
+                            <p style="margin-top:25px;">
+                                Date: ______________________
+                            </p>
+
+                        </div>
+
+                        <!-- Dwell footer -->
+                        <p style="margin-top:35px;
+                                  text-align:center;
+                                  color:#45255e;">
+                            DWELL | Holiday Home Management
+                        </p>
+
+                    </div>
+
+                </t>
+            </t>
+
         </t>
+
     </template>
+
 </odoo>
