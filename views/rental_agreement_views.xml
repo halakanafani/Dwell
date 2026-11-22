@@ -1,291 +1,54 @@
 <odoo>
-
     <!-- List view: displays all rental agreements -->
     <record id="view_rental_agreement_list" model="ir.ui.view">
         <field name="name">dwell.rental.agreement.list</field>
         <field name="model">dwell.rental.agreement</field>
         <field name="arch" type="xml">
-            <list string="Rental Agreements"
-                  decoration-success="status == 'signed'"
-                  decoration-danger="status == 'rejected'">
-
-                <!-- Main agreement information -->
+            <list string="Rental Agreements">
                 <field name="name"/>
-                <field name="booking_id"/>
                 <field name="guest_name"/>
                 <field name="agreement_date"/>
-
-                <!-- Displays the status using coloured badges -->
-                <field name="status"
-                       widget="badge"
-                       decoration-success="status == 'signed'"
-                       decoration-info="status == 'generated'"
-                       decoration-warning="status == 'draft'"
-                       decoration-danger="status == 'rejected'"/>
-
+                <field name="status"/>
             </list>
         </field>
     </record>
 
-
-    <!-- Form view: create and manage rental agreements -->
+    <!-- Form view: create and edit an agreement -->
     <record id="view_rental_agreement_form" model="ir.ui.view">
         <field name="name">dwell.rental.agreement.form</field>
         <field name="model">dwell.rental.agreement</field>
         <field name="arch" type="xml">
             <form string="Rental Agreement">
-
-                <!-- Buttons for managing the agreement workflow -->
-                <header>
-
-                    <!-- Generates an agreement using the booking and template -->
-                    <button name="action_generate_agreement"
-                            string="Generate Agreement"
-                            type="object"
-                            class="btn-primary"
-                            invisible="status != 'draft'"/>
-
-                    <!-- Marks a generated agreement as signed -->
-                    <button name="action_sign_agreement"
-                            string="Mark as Signed"
-                            type="object"
-                            class="btn-primary"
-                            invisible="status != 'generated'"/>
-
-                    <!-- Rejects an agreement before it is signed -->
-                    <button name="action_reject_agreement"
-                            string="Reject Agreement"
-                            type="object"
-                            invisible="status not in ('draft', 'generated')"/>
-
-                    <!-- Prints the generated or signed agreement as PDF -->
-                    <button name="action_print_pdf"
-                            string="Print PDF"
-                            type="object"
-                            invisible="status not in ('generated', 'signed')"/>
-
-                    <!-- Displays the current agreement status -->
-                    <field name="status"
-                           widget="statusbar"
-                           statusbar_visible="draft,generated,signed,rejected"/>
-
-                </header>
-
-
                 <sheet>
-
-                    <!-- Main agreement reference -->
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name"
-                                   readonly="1"/>
-                        </h1>
-                    </div>
-
-
-                    <!-- Agreement and booking information -->
                     <group>
-
-                        <group string="Agreement Information">
-
-                            <!-- Links to an existing booking from Hala's system -->
-                            <field name="booking_id"/>
-
-                            <!-- Guest name is filled automatically -->
+                        <group>
+                            <field name="name"/>
                             <field name="guest_name"/>
-
-                            <!-- Date the agreement was created -->
+                        </group>
+                        <group>
                             <field name="agreement_date"/>
-
+                            <field name="status"/>
                         </group>
-
-
-                        <group string="Booking Details">
-
-                            <!-- Property retrieved from the selected booking -->
-                            <field name="property_id"
-                                   readonly="1"/>
-
-                            <!-- Check-in date retrieved from the booking -->
-                            <field name="check_in_date"
-                                   readonly="1"/>
-
-                            <!-- Check-out date retrieved from the booking -->
-                            <field name="check_out_date"
-                                   readonly="1"/>
-
-                        </group>
-
                     </group>
-
-
-                    <!-- Organises the agreement content into separate tabs -->
-                    <notebook>
-
-                        <!-- Select a reusable agreement template -->
-                        <page string="Agreement Template">
-
-                            <group>
-                                <field name="template_id"/>
-                            </group>
-
-                        </page>
-
-
-                        <!-- Displays terms copied from the template -->
-                        <page string="Terms and Conditions">
-
-                            <group>
-                                <field name="terms_content"
-                                       placeholder="Enter the rental agreement terms..."/>
-                            </group>
-
-                        </page>
-
-
-                        <!-- Displays rules guests must follow -->
-                        <page string="House Rules">
-
-                            <group>
-                                <field name="house_rules"
-                                       placeholder="Enter the house rules..."/>
-                            </group>
-
-                        </page>
-
-
-                        <!-- Stores the reason for rejecting an agreement -->
-                        <page string="Rejection Details">
-
-                            <group>
-                                <field name="rejection_reason"
-                                       placeholder="Enter the reason before rejecting the agreement..."/>
-                            </group>
-
-                        </page>
-
-                    </notebook>
-
                 </sheet>
-
             </form>
         </field>
     </record>
 
-
     <!-- Action: opens the Rental Agreements screen -->
-    <record id="action_rental_agreements"
-            model="ir.actions.act_window">
-
+    <record id="action_rental_agreements" model="ir.actions.act_window">
         <field name="name">Rental Agreements</field>
         <field name="res_model">dwell.rental.agreement</field>
         <field name="view_mode">list,form</field>
-
     </record>
 
 
     <!-- Adds Rental Agreements under the Dwell menu -->
-    <menuitem id="menu_dwell_rental_agreements"
-              name="Rental Agreements"
-              parent="menu_dwell_root"
-              action="action_rental_agreements"
-              sequence="20"/>
-
-
-
-    <!-- List view: displays reusable agreement templates -->
-    <record id="view_agreement_template_list"
-            model="ir.ui.view">
-
-        <field name="name">dwell.agreement.template.list</field>
-        <field name="model">dwell.agreement.template</field>
-
-        <field name="arch" type="xml">
-
-            <list string="Agreement Templates">
-
-                <!-- Template name and active status -->
-                <field name="name"/>
-                <field name="active"/>
-
-            </list>
-
-        </field>
-    </record>
-
-
-    <!-- Form view: create and edit agreement templates -->
-    <record id="view_agreement_template_form"
-            model="ir.ui.view">
-
-        <field name="name">dwell.agreement.template.form</field>
-        <field name="model">dwell.agreement.template</field>
-
-        <field name="arch" type="xml">
-
-            <form string="Agreement Template">
-
-                <sheet>
-
-                    <!-- Basic template information -->
-                    <group>
-
-                        <field name="name"/>
-                        <field name="active"/>
-
-                    </group>
-
-
-                    <!-- Organises template details into separate tabs -->
-                    <notebook>
-
-                        <!-- Standard terms used in rental agreements -->
-                        <page string="Terms and Conditions">
-
-                            <group>
-                                <field name="content"
-                                       placeholder="Enter standard rental agreement terms..."/>
-                            </group>
-
-                        </page>
-
-
-                        <!-- House rules applied to rental agreements -->
-                        <page string="House Rules">
-
-                            <group>
-                                <field name="house_rules"
-                                       placeholder="Enter the house rules..."/>
-                            </group>
-
-                        </page>
-
-                    </notebook>
-
-                </sheet>
-
-            </form>
-
-        </field>
-    </record>
-
-
-    <!-- Action: opens the Agreement Templates screen -->
-    <record id="action_agreement_templates"
-            model="ir.actions.act_window">
-
-        <field name="name">Agreement Templates</field>
-        <field name="res_model">dwell.agreement.template</field>
-        <field name="view_mode">list,form</field>
-
-    </record>
-
-
-    <!-- Adds Agreement Templates under the Dwell menu -->
-    <menuitem id="menu_dwell_agreement_templates"
-              name="Agreement Templates"
-              parent="menu_dwell_root"
-              action="action_agreement_templates"
-              sequence="30"/>
-
+    <menuitem
+       id="menu_dwell_rental_agreements"
+       name="Rental Agreements"
+       parent="menu_dwell_root"
+       action="action_rental_agreements"
+       sequence="20"
+    />
 </odoo>
