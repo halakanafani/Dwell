@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dwell_property_user,access.dwell.property.user,model_dwell_property,,1,1,1,1
+access_dwell_rental_agreement,dwell.rental.agreement,model_dwell_rental_agreement,base.group_user,1,1,1,1
+access_dwell_booking,dwell.booking,model_dwell_booking,base.group_user,1,1,1,1
+access_dwell_permit,dwell.permit,model_dwell_permit,base.group_user,1,1,1,1
+access_dwell_agreement_template,dwell.agreement.template,model_dwell_agreement_template,base.group_user,1,1,1,1
+access_dwell_permit_all,access.dwell.permit.all,model_dwell_permit,,1,1,1,1
+access_dwell_permit_notification_all,access.dwell.permit.notification.all,model_dwell_permit_notification,,1,1,1,1
+access_dwell_rental_agreement,dwell.rental.agreement,model_dwell_rental_agreement,base.group_user,1,1,1,1
