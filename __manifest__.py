@@ -9,6 +9,7 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'views/property_views.xml',
+        'views/menus.xml',
         'views/rental_agreement_views.xml',
         'views/permit_views.xml',
     ],
