@@ -1,0 +1,58 @@
+<odoo>
+    <record id="view_dwell_unit_list" model="ir.ui.view">
+        <field name="name">dwell.unit.list</field>
+        <field name="model">dwell.unit</field>
+        <field name="arch" type="xml">
+            <list string="Units">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="unit_type"/>
+                <field name="bedrooms"/>
+                <field name="unit_status"/>
+            </list>
+        </field>
+    </record>
+
+        <record id="view_dwell_unit_form" model="ir.ui.view">
+        <field name="name">dwell.unit.form</field>
+        <field name="model">dwell.unit</field>
+        <field name="arch" type="xml">
+            <form string="Unit">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="property_id"/>
+                        <field name="unit_type"/>
+                        <field name="bedrooms"/>
+                        <field name="unit_status"/>
+                    </group>
+
+                    <group string="Villa Details" invisible="unit_type != 'villa'">
+                        <field name="has_private_pool"/>
+                        <field name="number_of_floors" string="Villa Floors"/>
+                    </group>
+
+                    <group string="Apartment Details" invisible="unit_type != 'apartment'">
+                        <field name="building_name"/>
+                        <field name="building_access_info"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_dwell_unit" model="ir.actions.act_window">
+        <field name="name">Units</field>
+        <field name="res_model">dwell.unit</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_dwell_unit_list"/>
+    </record>
+
+    <menuitem id="menu_dwell_units"
+              name="Units"
+              parent="menu_dwell_root"
+              action="action_dwell_unit"
+              groups="dwell_management.group_dwell_manager"
+              sequence="20"/>
+</odoo>
+    

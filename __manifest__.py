@@ -13,6 +13,7 @@
         'security/ir.model.access.csv',
         'data/rental_agreement_sequence.xml',
         'views/property_views.xml',
+        'views/menus.xml',
         'views/booking.xml',
         'data/cron_data.xml',
         'views/rental_agreement_views.xml',
