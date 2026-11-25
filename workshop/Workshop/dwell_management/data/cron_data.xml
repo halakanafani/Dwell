@@ -1,14 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <!-- iCal Auto-Sync Cron Job -->
-        <record id="ir_cron_ical_sync" model="ir.cron">
-            <field name="name">Dwell: iCal Availability Sync</field>
-            <field name="model_id" ref="model_dwell_availability"/>
-            <field name="state">code</field>
-            <field name="code">model.cron_sync_ical_feeds()</field>
-            <field name="interval_number">15</field>
-            <field name="interval_type">minutes</field>
-            <field name="numbercall">-1</field>
+        <!-- Sequence for Booking Reference Number -->
+        <record id="seq_dwell_booking" model="ir.sequence">
+            <field name="name">Dwell Booking Sequence</field>
+            <field name="code">dwell.booking</field>
+            <field name="prefix">BOOK/</field>
+            <field name="padding">5</field>
         </record>
     </data>
 </odoo>
