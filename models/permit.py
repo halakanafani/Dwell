@@ -50,8 +50,8 @@ class DwellPermit(models.Model):
     MAX_INDIVIDUAL_PERMITS = 8
 
     # States in which a permit counts as "in use" for the eligibility checks.
-    ACTIVE_STATES = ['under_inspection', 'valid', 'expiring_soon', 'suspended']
-
+    ACTIVE_STATES = ['under_inspection', 'valid', 'expiring_soon', 'suspended',
+                     'reopen_requested', 'reopening_inspection']
     # Decision reported by DTCM -> (states it may be recorded from, state it leads to).
     # This table is the single place that defines the allowed DTCM transitions.
     DTCM_TRANSITIONS = {
@@ -63,17 +63,24 @@ class DwellPermit(models.Model):
         'ReopeningInspection': (['reopen_requested'], 'reopening_inspection'),
     }
 
-    # Fields that are frozen as soon as the application leaves the draft state.
+    # Fields frozen as soon as the application leaves the draft state.
     LOCKED_AFTER_SUBMIT = [
-        'permit_type', 'unit_id', 'manager_id', 'issue_date', 'expiry_date',
+        'permit_type', 'unit_id', 'manager_id',
         'operator_license_no', 'owner_authorisation_letter',
         'owner_authorisation_filename', 'contract_start_date', 'contract_end_date',
     ]
+    # DTCM-issued dates: entered while under inspection, frozen once DTCM decides.
+    LOCKED_AFTER_DECISION = ['issue_date', 'expiry_date']
 
     # ------------------------------------------------------------------
     # Fields - Permit (base class)
     # ------------------------------------------------------------------
-    name = fields.Char(string='Permit Number', required=True, copy=False, default='New')
+    # Our own internal reference for the application. The official number is
+    # issued by DTCM and stored in dtcm_permit_no below.
+    name = fields.Char(string='Application Ref', required=True, copy=False, default='New')
+    dtcm_permit_no = fields.Char(
+        string='DTCM Permit Number', copy=False,
+        help="Official permit number issued by DTCM. Entered when DTCM approves the application.")
     permit_type = fields.Selection(
         [('individual', 'Individual Owner'), ('operator', 'Operator')],
         string='Permit Type', required=True, default='individual')
@@ -82,7 +89,6 @@ class DwellPermit(models.Model):
     manager_id = fields.Many2one(
         'res.users', string='Property Manager', required=True,
         default=lambda self: self.env.user)
-    license_info = fields.Char(string='License Info')
     issue_date = fields.Date(string='Issue Date')
     expiry_date = fields.Date(string='Expiry Date')
     # Filled in by the manager when renewing; copied into expiry_date by renew_permit().
@@ -112,6 +118,22 @@ class DwellPermit(models.Model):
     owner_authorisation_filename = fields.Char()
     contract_start_date = fields.Date(string='Contract Start')
     contract_end_date = fields.Date(string='Contract End')
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Give every new application its internal reference (APP/00001)."""
+        for vals in vals_list:
+            if vals.get('name', 'New') == 'New':
+                vals['name'] = self.env['ir.sequence'].next_by_code('dwell.permit') or 'New'
+        return super().create(vals_list)
+
+    @api.constrains('dtcm_permit_no')
+    def _check_dtcm_permit_no_unique(self):
+        """A DTCM permit number belongs to exactly one permit."""
+        for p in self.filtered('dtcm_permit_no'):
+            if self.search_count([('dtcm_permit_no', '=', p.dtcm_permit_no), ('id', '!=', p.id)]):
+                raise ValidationError("DTCM permit number %s is already used by another permit."
+                                      % p.dtcm_permit_no)
 
     # ------------------------------------------------------------------
     # Constraints
@@ -174,11 +196,11 @@ class DwellPermit(models.Model):
     def validate_contract_period(self):
         """Raise an error unless the contract covers the permit's expiry date."""
         self.ensure_one()
-        if not (self.contract_start_date and self.contract_end_date and self.expiry_date):
-            raise UserError("Fill in the contract start, contract end and expiry dates.")
-        if self.expiry_date > self.contract_end_date:
+        if not (self.contract_start_date and self.contract_end_date):
+            raise UserError("Fill in the contract start and contract end dates.")
+        if self.expiry_date and self.expiry_date > self.contract_end_date:
             raise UserError("The permit expiry date cannot be after the contract end date.")
-
+        
     # ------------------------------------------------------------------
     # Locking: an official record must not be edited freely
     # ------------------------------------------------------------------
@@ -194,23 +216,21 @@ class DwellPermit(models.Model):
                 raise UserError(
                     "This permit has been submitted, so its details are locked. "
                     "Use the DTCM actions or Renew Permit to change the dates.")
+            if (any(f in vals for f in self.LOCKED_AFTER_DECISION)
+                    and any(p.state not in ('draft', 'under_inspection') for p in self)):
+                raise UserError(
+                    "DTCM has already decided on this permit, so its dates are locked. "
+                    "Use Renew Permit to change the expiry date.")        
         return super().write(vals)
 
     # ------------------------------------------------------------------
     # Statechart operations
     # ------------------------------------------------------------------
     def action_submit_application(self):
-        """StartingApplication -> verification -> UnderInspection.
-
-        Requires a future expiry date, then runs the checks that belong to
-        the permit type. If any check fails, an error is shown and the
-        application stays in the draft so it can be corrected.
-        """
+        """StartingApplication -> verification -> UnderInspection."""
         for p in self:
             if p.state != 'draft':
                 raise UserError("Only a new application can be submitted.")
-            if not p.expiry_date or p.expiry_date <= fields.Date.today():
-                raise UserError("Enter an expiry date in the future before submitting.")
             if p.permit_type == 'individual':
                 p.check_unit_eligibility()
                 p.check_permit_limit()
@@ -239,6 +259,13 @@ class DwellPermit(models.Model):
                 raise UserError(
                     "DTCM status '%s' cannot be recorded while the permit is '%s'."
                     % (status, dict(p._fields['state'].selection).get(p.state)))
+            if new_state == 'valid':
+                if not p.dtcm_permit_no:
+                    raise UserError("Enter the DTCM Permit Number before recording the approval.")
+                if not p.expiry_date:
+                    raise UserError("Enter the expiry date issued by DTCM before recording the approval.")
+                if p.permit_type == 'operator':
+                    p.validate_contract_period()
             vals = {'state': new_state, 'last_dtcm_update': decision_date}
             if remarks:
                 vals['dtcm_remarks'] = remarks
@@ -246,7 +273,15 @@ class DwellPermit(models.Model):
                 vals['issue_date'] = decision_date
             # System write: bypasses the lock on submitted permits.
             p.with_context(permit_system_write=True).write(vals)
+            if new_state == 'valid':
+                p._remind_if_expiring()
         return True
+    def _remind_if_expiring(self, days_before_expiry=30):
+        """Send the expiry reminder right away if a valid permit is already within the window."""
+        today = fields.Date.today()
+        for p in self.filtered(lambda r: r.state == 'valid' and r.expiry_date):
+            if (p.expiry_date - today).days <= days_before_expiry:
+                p.send_reminder(days_before_expiry)
 
     def send_reminder(self, days_before_expiry=30):
         """Valid -> ExpiringSoon, and notify the property manager.
@@ -285,6 +320,7 @@ class DwellPermit(models.Model):
             # System write: renewal is an official way to change the expiry date.
             p.with_context(permit_system_write=True).write(
                 {'expiry_date': new_expiry_date, 'new_expiry_date': False, 'state': 'valid'})
+            p._remind_if_expiring()
         return True
 
     # ------------------------------------------------------------------
@@ -313,10 +349,6 @@ class DwellPermit(models.Model):
     def action_dtcm_reopening_inspection(self):
         """Button: the reopening fee was paid and DTCM started a new inspection."""
         return self.record_dtcm_update('ReopeningInspection')
-
-    def action_send_reminder(self):
-        """Button: send an expiry reminder for the selected permit."""
-        return self.send_reminder()
 
     def action_renew(self):
         """Button: renew the permit using the New Expiry Date entered on the form."""
@@ -373,11 +405,12 @@ class DwellPermitNotification(models.Model):
     @api.model
     def create_notification(self, permit, days_before_expiry=30):
         """createNotification(): create one reminder addressed to the permit's manager."""
+        ref = permit.dtcm_permit_no or permit.name
         if permit.expiry_date:
             days = (permit.expiry_date - fields.Date.today()).days
-            text = "Permit %s expires in %d day(s), on %s." % (permit.name, days, permit.expiry_date)
+            text = "Permit %s expires in %d day(s), on %s." % (ref, days, permit.expiry_date)
         else:
-            text = "Permit %s is approaching its expiry date." % permit.name
+            text = "Permit %s is approaching its expiry date." % ref
         return self.create({
             'permit_id': permit.id,
             'recipient_id': permit.manager_id.id,

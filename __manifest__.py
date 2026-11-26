@@ -20,7 +20,11 @@
         'views/permit_views.xml',
         'report/rental_agreement_report.xml',
     ],
-
+    'assets': {
+        'web.assets_backend': [
+            'dwell_management/static/src/css/dwell_theme.css',
+        ],
+    },
     'installable': True,
     'application': True,
-}                       
+}

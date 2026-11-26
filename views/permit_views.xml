@@ -13,7 +13,15 @@
     because the menu below uses the parent menu "menu_dwell_root" defined there.
 -->
 <odoo>
-
+    <data noupdate="1">
+        <record id="seq_dwell_permit" model="ir.sequence">
+            <field name="name">Dwell Permit Application</field>
+            <field name="code">dwell.permit</field>
+            <field name="prefix">APP/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
     <!-- ================================================================
          List view
          Row colours: green = valid, orange = needs attention,
@@ -27,6 +35,7 @@
                   decoration-warning="state in ('expiring_soon', 'suspended')"
                   decoration-danger="state in ('expired', 'closed', 'rejected')">
                 <field name="name"/>
+                <field name="dtcm_permit_no"/>
                 <field name="permit_type"/>
                 <field name="unit_id"/>
                 <field name="manager_id"/>
@@ -34,6 +43,37 @@
                 <field name="expiry_date"/>
                 <field name="state" widget="badge"/>
             </list>
+        </field>
+    </record>
+
+    <record id="view_dwell_permit_search" model="ir.ui.view">
+        <field name="name">dwell.permit.search</field>
+        <field name="model">dwell.permit</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="dtcm_permit_no"/>
+                <field name="unit_id"/>
+                <field name="manager_id"/>
+                <filter name="filter_valid" string="Valid"
+                        domain="[('state', '=', 'valid')]"/>
+                <filter name="filter_expiring" string="Expiring Soon"
+                        domain="[('state', '=', 'expiring_soon')]"/>
+                <filter name="filter_expired" string="Expired"
+                        domain="[('state', '=', 'expired')]"/>
+                <filter name="filter_attention" string="Suspended / Closed"
+                        domain="[('state', 'in', ('suspended', 'closed'))]"/>
+                <separator/>
+                <filter name="filter_individual" string="Individual Owner"
+                        domain="[('permit_type', '=', 'individual')]"/>
+                <filter name="filter_operator" string="Operator"
+                        domain="[('permit_type', '=', 'operator')]"/>
+                <separator/>
+                <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                <filter name="group_unit" string="Unit" context="{'group_by': 'unit_id'}"/>
+                <filter name="group_manager" string="Property Manager" context="{'group_by': 'manager_id'}"/>
+                <filter name="group_type" string="Permit Type" context="{'group_by': 'permit_type'}"/>
+            </search>
         </field>
     </record>
 
@@ -71,8 +111,6 @@
                             invisible="state != 'reopen_requested'"/>
 
                     <!-- Expiry handling -->
-                    <button name="action_send_reminder" type="object" string="Send Reminder"
-                            invisible="state != 'valid'"/>
                     <button name="action_renew" type="object" string="Renew Permit"
                             class="btn-primary" invisible="state not in ('expiring_soon', 'expired')"/>
 
@@ -85,15 +123,16 @@
                          application is submitted they are locked (see permit.py). -->
                     <group>
                         <group string="Permit">
-                            <field name="name" readonly="state not in ('draft', 'under_inspection')"/>
+                            <field name="name" readonly="1"/>
+                            <field name="dtcm_permit_no" readonly="state != 'under_inspection'"
+                                   placeholder="Issued by DTCM on approval"/>                            
                             <field name="permit_type" readonly="state != 'draft'"/>
                             <field name="unit_id" readonly="state != 'draft'"/>
                             <field name="manager_id" readonly="state != 'draft'"/>
-                            <field name="license_info" readonly="state not in ('draft', 'under_inspection')"/>
                         </group>
                         <group string="Dates">
-                            <field name="issue_date" readonly="state != 'draft'"/>
-                            <field name="expiry_date" readonly="state != 'draft'"/>
+                            <field name="issue_date" readonly="state != 'under_inspection'"/>
+                            <field name="expiry_date" readonly="state != 'under_inspection'"/>
                             <!-- Only shown when a renewal is possible -->
                             <field name="new_expiry_date"
                                    invisible="state not in ('expiring_soon', 'expired')"/>

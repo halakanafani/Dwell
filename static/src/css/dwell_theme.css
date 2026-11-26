@@ -1,0 +1,317 @@
+/*
+ * Dwell light theme for the Odoo backend: soft lavender surfaces, dark text,
+ * deep purple accents.
+ *
+ * Odoo Community has no official theme editor, so this file overrides the
+ * colours and shapes of the main screens. Change the values in :root to
+ * restyle it.
+ */
+:root {
+    --dwell-primary: #6b4a8f;       /* brand purple: navbar */
+    --dwell-primary-dark: #583a78;  /* navbar gradient end */
+    --dwell-bg: #ede4f7;            /* page background */
+    --dwell-surface: #f8f4fc;       /* forms, list rows, panels */
+    --dwell-surface-2: #e3d5f2;     /* list headers, hover, active tab */
+    --dwell-input: #ffffff;         /* input fields */
+    --dwell-border: #c3a8de;
+    --dwell-line: rgba(69, 37, 94, 0.12);      /* soft dividers */
+    --dwell-text: #24133a;          /* main text (dark) */
+    --dwell-muted: #5d4a78;         /* labels, column headers */
+    --dwell-accent: #5a3380;        /* primary buttons, current step, links */
+    --dwell-accent-hover: #46276a;
+    --dwell-text-on-accent: #ffffff;
+    --dwell-success: #1b7a46;
+    --dwell-warning: #a65f00;
+    --dwell-danger: #b3261e;
+    --dwell-radius: 12px;
+    --dwell-shadow: 0 8px 24px rgba(69, 37, 94, 0.15);
+}
+
+/* Slim purple scrollbars */
+* {
+    scrollbar-color: var(--dwell-border) transparent;
+    scrollbar-width: thin;
+}
+
+/* ---------- Page and layout ---------- */
+body,
+.o_web_client,
+.o_action_manager,
+.o_content,
+.o_control_panel {
+    background-color: var(--dwell-bg) !important;
+    color: var(--dwell-text) !important;
+}
+.breadcrumb-item,
+.o_breadcrumb .active {
+    color: var(--dwell-text) !important;
+}
+
+/* ---------- Top navigation bar (stays purple, white text) ---------- */
+.o_main_navbar {
+    background: linear-gradient(90deg, var(--dwell-primary), var(--dwell-primary-dark)) !important;
+    box-shadow: 0 2px 10px rgba(69, 37, 94, 0.25);
+}
+.o_main_navbar,
+.o_main_navbar .o_menu_brand,
+.o_main_navbar .o_menu_sections .o_nav_entry,
+.o_main_navbar .o_menu_sections .dropdown-toggle,
+.o_main_navbar .o_nav_entry,
+.o_main_navbar button {
+    color: #ffffff !important;
+}
+.o_main_navbar .o_menu_sections .o_nav_entry,
+.o_main_navbar .o_menu_sections .dropdown-toggle,
+.o_main_navbar .o_menu_brand {
+    transition: background-color 0.15s ease;
+}
+.o_main_navbar .o_menu_sections .o_nav_entry:hover,
+.o_main_navbar .o_menu_sections .dropdown-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* ---------- Search bar, dropdowns, popups ---------- */
+.o_searchview,
+.o_searchview_input {
+    background-color: var(--dwell-input) !important;
+    color: var(--dwell-text) !important;
+    border-color: var(--dwell-border) !important;
+    border-radius: var(--dwell-radius) !important;
+}
+.dropdown-menu,
+.modal-content,
+.popover {
+    background-color: var(--dwell-surface) !important;
+    color: var(--dwell-text) !important;
+    border-color: var(--dwell-border) !important;
+    border-radius: var(--dwell-radius) !important;
+    box-shadow: var(--dwell-shadow);
+}
+.dropdown-item,
+.modal-title,
+.modal-body {
+    color: var(--dwell-text) !important;
+}
+.dropdown-item {
+    transition: background-color 0.15s ease;
+}
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--dwell-surface-2) !important;
+}
+
+/* ---------- Lists ---------- */
+.o_list_table {
+    --bs-table-border-color: var(--dwell-line);
+    border-color: var(--dwell-line) !important;
+}
+.o_list_table thead th {
+    background-color: var(--dwell-surface-2) !important;
+    color: var(--dwell-muted) !important;
+    border-color: var(--dwell-line) !important;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.o_list_table tr {
+    border-color: var(--dwell-line) !important;
+}
+.o_list_table > tbody > tr > td,
+.o_list_table > tfoot > tr > td {
+    background-color: var(--dwell-surface) !important;
+    color: var(--dwell-text) !important;
+    border-color: var(--dwell-line) !important;
+    transition: background-color 0.15s ease;
+}
+.o_list_table > tbody > tr.o_data_row:hover > td {
+    background-color: var(--dwell-surface-2) !important;
+}
+/* Row colours set by the permit status, darkened for the light background */
+.o_list_table tr.text-success > td { color: var(--dwell-success) !important; }
+.o_list_table tr.text-warning > td { color: var(--dwell-warning) !important; }
+.o_list_table tr.text-danger > td  { color: var(--dwell-danger) !important; }
+
+/* ---------- Forms ---------- */
+.o_form_view .o_form_sheet_bg {
+    background-color: var(--dwell-bg) !important;
+    border-color: transparent !important;
+}
+.o_form_view .o_form_sheet {
+    background-color: var(--dwell-surface) !important;
+    color: var(--dwell-text) !important;
+    border: 1px solid var(--dwell-line) !important;
+    border-radius: 18px !important;
+    box-shadow: var(--dwell-shadow);
+}
+.o_form_statusbar {
+    background-color: var(--dwell-surface) !important;
+    border-color: var(--dwell-line) !important;
+}
+.o_form_label,
+.o_horizontal_separator,
+.o_inner_group .o_form_label {
+    color: var(--dwell-muted) !important;
+}
+.o_input,
+.form-control,
+.form-select,
+.o_field_widget .o_input,
+textarea {
+    background-color: var(--dwell-input) !important;
+    color: var(--dwell-text) !important;
+    border-color: var(--dwell-border) !important;
+    border-radius: 10px !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.o_input:focus,
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+    border-color: var(--dwell-accent) !important;
+    box-shadow: 0 0 0 3px rgba(90, 51, 128, 0.18) !important;
+}
+.o_input::placeholder,
+.form-control::placeholder {
+    color: var(--dwell-muted) !important;
+    opacity: 0.8;
+}
+.o_field_widget[readonly],
+.o_readonly_modifier {
+    color: var(--dwell-text) !important;
+}
+.nav-tabs {
+    border-color: var(--dwell-line) !important;
+}
+.nav-tabs .nav-link {
+    color: var(--dwell-muted) !important;
+    border-radius: 10px 10px 0 0 !important;
+    transition: color 0.15s ease;
+}
+.nav-tabs .nav-link:hover {
+    color: var(--dwell-text) !important;
+}
+.nav-tabs .nav-link.active {
+    background-color: var(--dwell-surface-2) !important;
+    color: var(--dwell-text) !important;
+    border-color: var(--dwell-line) !important;
+}
+
+/* ---------- Status bar (permit workflow) ---------- */
+.o_statusbar_status .o_arrow_button {
+    background-color: var(--dwell-surface-2) !important;
+    color: var(--dwell-muted) !important;
+}
+.o_statusbar_status .o_arrow_button.o_arrow_button_current,
+.o_statusbar_status .o_arrow_button.o_arrow_button_current.disabled {
+    background-color: var(--dwell-accent) !important;
+    color: var(--dwell-text-on-accent) !important;
+}
+
+/* ---------- Buttons ---------- */
+.btn:not(.o_arrow_button) {
+    border-radius: 10px !important;
+    transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn.btn-primary {
+    background-color: var(--dwell-accent) !important;
+    color: var(--dwell-text-on-accent) !important;
+    border-color: var(--dwell-accent) !important;
+    font-weight: 600;
+}
+.btn.btn-primary:hover,
+.btn.btn-primary:focus,
+.btn.btn-primary:active {
+    background-color: var(--dwell-accent-hover) !important;
+    color: var(--dwell-text-on-accent) !important;
+    border-color: var(--dwell-accent-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(69, 37, 94, 0.25);
+}
+.btn.btn-secondary,
+.btn.btn-light {
+    background-color: var(--dwell-surface-2) !important;
+    color: var(--dwell-text) !important;
+    border-color: var(--dwell-border) !important;
+}
+.btn.btn-secondary:hover,
+.btn.btn-light:hover {
+    background-color: var(--dwell-border) !important;
+    transform: translateY(-1px);
+}
+
+/* ---------- Details ---------- */
+
+/* Tab bar (Notifications tab) */
+.o_notebook_headers,
+.o_notebook_headers .nav,
+.o_notebook .nav-tabs,
+.o_notebook .tab-content,
+.o_notebook_content {
+    background-color: var(--dwell-surface) !important;
+    border-color: var(--dwell-line) !important;
+}
+
+/* Breadcrumb: no box behind the previous page name */
+.o_breadcrumb,
+.breadcrumb,
+.breadcrumb-item,
+.breadcrumb-item a,
+.o_breadcrumb .o_back_button,
+.o_last_breadcrumb_item,
+.o_last_breadcrumb_item span {
+    background-color: transparent !important;
+}
+.breadcrumb-item a {
+    color: var(--dwell-muted) !important;
+}
+.breadcrumb-item a:hover {
+    color: var(--dwell-accent) !important;
+}
+
+/* Linked values (unit, manager, attached file) */
+.o_form_uri,
+.o_form_uri span,
+.o_field_many2one a,
+.o_field_widget a:not(.btn) {
+    color: var(--dwell-accent) !important;
+}
+.o_form_uri:hover,
+.o_field_many2one a:hover,
+.o_field_widget a:not(.btn):hover {
+    color: var(--dwell-accent-hover) !important;
+    text-decoration: underline;
+}
+
+/* Section titles: purple text with a soft purple line */
+.o_horizontal_separator {
+    color: var(--dwell-accent) !important;
+    border-bottom: 1px solid var(--dwell-border) !important;
+}
+
+/* Remarks box: taller so it does not look like an empty pill */
+.o_field_text textarea {
+    min-height: 90px !important;
+}
+
+/* ---------- Notifications (toast messages such as "Missing required fields") ---------- */
+.o_notification {
+    background-color: var(--dwell-surface) !important;
+    color: var(--dwell-text) !important;
+    border: 1px solid var(--dwell-border) !important;
+    border-radius: var(--dwell-radius) !important;
+    box-shadow: var(--dwell-shadow);
+}
+.o_notification .o_notification_body,
+.o_notification .o_notification_content,
+.o_notification .o_notification_title,
+.o_notification .o_notification_buttons {
+    background-color: transparent !important;
+    color: var(--dwell-text) !important;
+}
+.o_notification .o_notification_close {
+    background-color: transparent !important;
+    color: var(--dwell-muted) !important;
+}
+.o_notification .o_notification_close:hover {
+    color: var(--dwell-accent) !important;
+}
