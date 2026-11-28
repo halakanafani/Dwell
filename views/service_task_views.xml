@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- LIST VIEW for Service Tasks (Odoo 19 uses <list> instead of <tree>) -->
+    <record id="view_service_tasks_list" model="ir.ui.view">
+        <field name="name">service.tasks.list</field>
+        <field name="model">service.tasks</field>
+        <field name="arch" type="xml">
+            <!-- Row color decorations based on task state -->
+            <list string="Service Tasks" decoration-info="state == 'draft'" decoration-warning="state == 'in_progress'" decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="task_type"/>
+                <field name="assigned_staff_id"/>
+                <field name="scheduled_date"/>
+                <!-- Star rating widget for priority -->
+                <field name="priority" widget="priority"/>
+                <!-- Pill badge widget for status -->
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW for creating/editing a single Service Task -->
+    <record id="view_service_tasks_form" model="ir.ui.view">
+        <field name="name">service.tasks.form</field>
+        <field name="model">service.tasks</field>
+        <field name="arch" type="xml">
+            <form string="Service Task">
+                <header>
+                    <!-- Each button calls the matching Python method on service.tasks; 'invisible' hides buttons when not applicable -->
+                    <button name="action_assign" string="Assign" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_start" string="Start Task" type="object" class="btn-primary" invisible="state != 'assigned'"/>
+                    <button name="action_done" string="Mark Completed" type="object" class="btn-success" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ('done', 'cancelled')"/>
+                    <!-- Top-right stage bar -->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,assigned,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g., Post-Checkout Deep Clean"/></h1>
+                    </div>
+                    <!-- Two-column layout inside <group> -->
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="task_type"/>
+                            <field name="priority" widget="priority"/>
+                        </group>
+                        <group>
+                            <field name="assigned_staff_id"/>
+                            <field name="scheduled_date"/>
+                            <field name="estimated_hours"/>
+                            <field name="completion_date" invisible="state != 'done'"/>
+                        </group>
+                    </group>
+                    <!-- Tabbed sections -->
+                    <notebook>
+                        <page string="Instructions">
+                            <field name="description" placeholder="Enter maintenance or cleaning checklist details..."/>
+                        </page>
+                        <page string="Completion Notes">
+                            <field name="completion_notes" placeholder="Notes recorded upon completion..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- Chatter panel for notes, log messages, and activities -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- LIST VIEW for Field Service Staff -->
+    <record id="view_field_service_staff_list" model="ir.ui.view">
+        <field name="name">field.service.staff.list</field>
+        <field name="model">field.service.staff</field>
+        <field name="arch" type="xml">
+            <list string="Field Service Staff">
+                <field name="name"/>
+                <field name="role"/>
+                <field name="phone"/>
+                <field name="availability_status" widget="badge"/>
+                <field name="task_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW for Field Service Staff -->
+    <record id="view_field_service_staff_form" model="ir.ui.view">
+        <field name="name">field.service.staff.form</field>
+        <field name="model">field.service.staff</field>
+        <field name="arch" type="xml">
+            <form string="Field Service Staff">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="role"/>
+                            <field name="availability_status"/>
+                        </group>
+                        <group>
+                            <field name="phone"/>
+                            <field name="email"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Assigned Tasks">
+                            <!-- Embedded list of tasks assigned to this staff member -->
+                            <field name="task_ids" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- WINDOW ACTIONS: tell Odoo which model and views open when clicking a menu -->
+    <record id="action_service_tasks" model="ir.actions.act_window">
+        <field name="name">Service Tasks</field>
+        <field name="res_model">service.tasks</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_field_service_staff" model="ir.actions.act_window">
+        <field name="name">Field Service Staff</field>
+        <field name="res_model">field.service.staff</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- MENU ITEMS: update parent="menu_dwell_root" to match your main Dwell app menu XML ID -->
+    <menuitem id="menu_dwell_services_root" name="Services &amp; Maintenance" parent="menu_dwell_root" sequence="30"/>
+    <menuitem id="menu_service_tasks" name="Service Tasks" parent="menu_dwell_services_root" action="action_service_tasks" sequence="10"/>
+    <menuitem id="menu_field_service_staff" name="Service Staff" parent="menu_dwell_services_root" action="action_field_service_staff" sequence="20"/>
+</odoo>

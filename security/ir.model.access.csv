@@ -11,3 +11,9 @@ access_dwell_permit_all,access.dwell.permit.all,model_dwell_permit,,1,1,1,1
 access_dwell_permit_notification_all,access.dwell.permit.notification.all,model_dwell_permit_notification,,1,1,1,1
 access_dwell_rental_agreement,dwell.rental.agreement,model_dwell_rental_agreement,base.group_user,1,1,1,1
 >>>>>>> 2ff131b06a072364bd885b0b395120c821922a1a
+# Columns: id, name, model_id:id (model_<name_with_dots_as_underscores>), group_id:id, perm_read, perm_write, perm_create, perm_unlink
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+# Grants internal Odoo users (base.group_user) full CRUD access to staff records
+access_field_service_staff_user,field.service.staff.user,model_field_service_staff,base.group_user,1,1,1,1
+# Grants internal Odoo users (base.group_user) full CRUD access to service task records
+access_service_tasks_user,service.tasks.user,model_service_tasks,base.group_user,1,1,1,1

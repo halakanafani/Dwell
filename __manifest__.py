@@ -19,6 +19,7 @@
         'views/rental_agreement_views.xml',
         'views/permit_views.xml',
         'report/rental_agreement_report.xml',
+        'views/service_task_views.xml',
     ],
     'assets': {
         'web.assets_backend': [

@@ -9,3 +9,5 @@ from . import rental_agreement
 from . import permit
 #from . import rental_agreement
 #from . import service_task
+# Import service_task.py 
+from . import service_task
